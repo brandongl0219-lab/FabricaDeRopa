@@ -1,11 +1,13 @@
-public class Lote {
+import java.util.Objects;
+import java.util.Comparator;
 
-
+public class Lote implements Comparable<Lote>, Comparator<Lote> {
     private int numeroLote;
     private int numeroPiezas;
     private String fechaFabricacion;
     private Prenda prenda;
 
+    public Lote() {}
 
     public Lote(int numeroLote, int numeroPiezas, String fechaFabricacion, Prenda prenda) {
         this.numeroLote = numeroLote;
@@ -14,58 +16,46 @@ public class Lote {
         this.prenda = prenda;
     }
 
-    public int getNumeroLote() {
-        return numeroLote;
-    }
-
-    public int getNumeroPiezas() {
-        return numeroPiezas;
-    }
-
-    public String getFechaFabricacion() {
-        return fechaFabricacion;
-    }
-
-    public Prenda getPrenda() {
-        return prenda;
-    }
-
-    public void setNumeroLote(int numeroLote) {
-        this.numeroLote = numeroLote;
-    }
-
-    public void setNumeroPiezas(int numeroPiezas) {
-        this.numeroPiezas = numeroPiezas;
-    }
-
-    public void setFechaFabricacion(String fechaFabricacion) {
-        this.fechaFabricacion = fechaFabricacion;
-    }
-
-    public void setPrenda(Prenda prenda) {
-        this.prenda = prenda;
-    }
-
-
     public double calcularCostoProduccionLote() {
-        return prenda.getCostoProduccionPorPieza() * numeroPiezas;
+        return this.numeroPiezas * prenda.getCostoProduccionPorPieza();
     }
-
 
     public double calcularPrecioVentaPorPieza() {
-        return prenda.getCostoProduccionPorPieza() * 1.15;
+        double costoBase = prenda.getCostoProduccionPorPieza();
+        return costoBase + (costoBase * 0.15); // +15%
     }
-
 
     public double calcularMontoRecuperacionLote() {
-        double precioPorPiezaEnLote = prenda.getCostoProduccionPorPieza() * 1.05;
-        return precioPorPiezaEnLote * numeroPiezas;
+        double costoBase = prenda.getCostoProduccionPorPieza();
+        double precioPorPiezaEnLote = costoBase + (costoBase * 0.05); // +5%
+        return precioPorPiezaEnLote * this.numeroPiezas;
     }
 
+    @Override
+    public int compareTo(Lote l) {
+        return Integer.compare(this.numeroLote, l.numeroLote);
+    }
+
+    @Override
+    public int compare(Lote l1, Lote l2) {
+        return Integer.compare(l1.numeroPiezas, l2.numeroPiezas);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Lote lote = (Lote) o;
+        return numeroLote == lote.numeroLote;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numeroLote);
+    }
+
+    @Override
     public String toString() {
-        return "Lote #" + numeroLote +
-                " | Piezas: " + numeroPiezas +
-                " | Fecha: " + fechaFabricacion +
-                " | " + prenda.toString();
+        return "Lote #" + numeroLote + " | Cantidad: " + numeroPiezas;
     }
 }

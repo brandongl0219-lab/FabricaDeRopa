@@ -1,11 +1,14 @@
-public class Prenda {
+import java.util.Objects;
+import java.util.Comparator;
 
-
+public class Prenda implements Comparable<Prenda>, Comparator<Prenda> {
     private String modelo;
     private String tela;
     private double costoProduccionPorPieza;
     private String genero;
     private String temporada;
+
+    public Prenda() {}
 
     public Prenda(String modelo, String tela, double costoProduccionPorPieza, String genero, String temporada) {
         this.modelo = modelo;
@@ -15,52 +18,36 @@ public class Prenda {
         this.temporada = temporada;
     }
 
-    public String getModelo() {
-        return modelo;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Prenda prenda = (Prenda) o;
+        return Objects.equals(modelo, prenda.modelo) && Objects.equals(tela, prenda.tela);
     }
 
-    public String getTela() {
-        return tela;
+    @Override
+    public int hashCode() {
+        return Objects.hash(modelo, tela);
     }
 
-    public double getCostoProduccionPorPieza() {
-        return costoProduccionPorPieza;
+    @Override
+    public int compareTo(Prenda p) {
+        // Orden natural por modelo (alfabético)
+        return this.modelo.compareTo(p.modelo);
     }
 
-    public String getGenero() {
-        return genero;
+    @Override
+    public int compare(Prenda p1, Prenda p2) {
+        // Orden por costo de producción
+        return Double.compare(p1.costoProduccionPorPieza, p2.costoProduccionPorPieza);
     }
 
-    public String getTemporada() {
-        return temporada;
-    }
+    public String getModelo() { return modelo; }
+    public double getCostoProduccionPorPieza() { return costoProduccionPorPieza; }
 
-
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
-    }
-
-    public void setTela(String tela) {
-        this.tela = tela;
-    }
-
-    public void setCostoProduccionPorPieza(double costoProduccionPorPieza) {
-        this.costoProduccionPorPieza = costoProduccionPorPieza;
-    }
-
-    public void setGenero(String genero) {
-        this.genero = genero;
-    }
-
-    public void setTemporada(String temporada) {
-        this.temporada = temporada;
-    }
-
+    @Override
     public String toString() {
-        return "Prenda: " + modelo +
-                " | Tela: " + tela +
-                " | Costo por pieza: " + costoProduccionPorPieza +
-                " | Genero: " + genero +
-                " | Temporada: " + temporada;
+        return "Prenda: " + modelo + " | Costo: $" + costoProduccionPorPieza;
     }
 }
