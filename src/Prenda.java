@@ -1,21 +1,35 @@
 import java.util.Objects;
-import java.util.Comparator;
 
-public class Prenda implements Comparable<Prenda>, Comparator<Prenda> {
+public class Prenda implements Comparable<Prenda>, java.util.Comparator<Prenda> {
+
     private String modelo;
     private String tela;
     private double costoProduccionPorPieza;
     private String genero;
     private String temporada;
+    private double limiteMaximoCosto;
 
     public Prenda() {}
 
-    public Prenda(String modelo, String tela, double costoProduccionPorPieza, String genero, String temporada) {
+    public Prenda(String modelo, String tela, double costo, String genero, String temporada, double limite)
+            throws GeneroInvalidoException, TemporadaInvalidaException, CostoExcedidoException {
+
+        if (!genero.equalsIgnoreCase("Masculino") && !genero.equalsIgnoreCase("Femenino") && !genero.equalsIgnoreCase("Mixto"))
+            throw new GeneroInvalidoException(genero);
+
+        if (!temporada.equalsIgnoreCase("Primavera") && !temporada.equalsIgnoreCase("Verano")
+                && !temporada.equalsIgnoreCase("Otoño") && !temporada.equalsIgnoreCase("Invierno"))
+            throw new TemporadaInvalidaException(temporada);
+
+        if (costo > limite)
+            throw new CostoExcedidoException(costo, limite);
+
         this.modelo = modelo;
         this.tela = tela;
-        this.costoProduccionPorPieza = costoProduccionPorPieza;
+        this.costoProduccionPorPieza = costo;
         this.genero = genero;
         this.temporada = temporada;
+        this.limiteMaximoCosto = limite;
     }
 
     @Override
@@ -27,27 +41,17 @@ public class Prenda implements Comparable<Prenda>, Comparator<Prenda> {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(modelo, tela);
-    }
+    public int hashCode() { return Objects.hash(modelo, tela); }
 
     @Override
-    public int compareTo(Prenda p) {
-        // Orden natural por modelo (alfabético)
-        return this.modelo.compareTo(p.modelo);
-    }
+    public int compareTo(Prenda p) { return this.modelo.compareTo(p.modelo); }
 
     @Override
-    public int compare(Prenda p1, Prenda p2) {
-        // Orden por costo de producción
-        return Double.compare(p1.costoProduccionPorPieza, p2.costoProduccionPorPieza);
-    }
+    public int compare(Prenda p1, Prenda p2) { return Double.compare(p1.costoProduccionPorPieza, p2.costoProduccionPorPieza); }
 
     public String getModelo() { return modelo; }
     public double getCostoProduccionPorPieza() { return costoProduccionPorPieza; }
 
     @Override
-    public String toString() {
-        return "Prenda: " + modelo + " | Costo: $" + costoProduccionPorPieza;
-    }
+    public String toString() { return "Prenda: " + modelo + " | Costo: $" + costoProduccionPorPieza; }
 }

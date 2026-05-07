@@ -1,7 +1,7 @@
 import java.util.Objects;
-import java.util.Comparator;
 
-public class Lote implements Comparable<Lote>, Comparator<Lote> {
+public class Lote implements Comparable<Lote>, java.util.Comparator<Lote> {
+
     private int numeroLote;
     private int numeroPiezas;
     private String fechaFabricacion;
@@ -9,53 +9,44 @@ public class Lote implements Comparable<Lote>, Comparator<Lote> {
 
     public Lote() {}
 
-    public Lote(int numeroLote, int numeroPiezas, String fechaFabricacion, Prenda prenda) {
+    public Lote(int numeroLote, int piezas, String fecha, Prenda prenda) throws PiezasInvalidasException {
+        if (piezas < 50 || piezas > 350)
+            throw new PiezasInvalidasException(piezas);
+
         this.numeroLote = numeroLote;
-        this.numeroPiezas = numeroPiezas;
-        this.fechaFabricacion = fechaFabricacion;
+        this.numeroPiezas = piezas;
+        this.fechaFabricacion = fecha;
         this.prenda = prenda;
     }
 
-    public double calcularCostoProduccionLote() {
-        return this.numeroPiezas * prenda.getCostoProduccionPorPieza();
-    }
+    public double calcularCostoProduccionLote() { return numeroPiezas * prenda.getCostoProduccionPorPieza(); }
 
     public double calcularPrecioVentaPorPieza() {
-        double costoBase = prenda.getCostoProduccionPorPieza();
-        return costoBase + (costoBase * 0.15); // +15%
+        double costo = prenda.getCostoProduccionPorPieza();
+        return costo + (costo * 0.15);
     }
 
     public double calcularMontoRecuperacionLote() {
-        double costoBase = prenda.getCostoProduccionPorPieza();
-        double precioPorPiezaEnLote = costoBase + (costoBase * 0.05); // +5%
-        return precioPorPiezaEnLote * this.numeroPiezas;
+        double costo = prenda.getCostoProduccionPorPieza();
+        return (costo + (costo * 0.05)) * numeroPiezas;
     }
 
     @Override
-    public int compareTo(Lote l) {
-        return Integer.compare(this.numeroLote, l.numeroLote);
-    }
+    public int compareTo(Lote l) { return Integer.compare(this.numeroLote, l.numeroLote); }
 
     @Override
-    public int compare(Lote l1, Lote l2) {
-        return Integer.compare(l1.numeroPiezas, l2.numeroPiezas);
-    }
+    public int compare(Lote l1, Lote l2) { return Integer.compare(l1.numeroPiezas, l2.numeroPiezas); }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Lote lote = (Lote) o;
-        return numeroLote == lote.numeroLote;
+        return numeroLote == ((Lote) o).numeroLote;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(numeroLote);
-    }
+    public int hashCode() { return Objects.hash(numeroLote); }
 
     @Override
-    public String toString() {
-        return "Lote #" + numeroLote + " | Cantidad: " + numeroPiezas;
-    }
+    public String toString() { return "Lote #" + numeroLote + " | Cantidad: " + numeroPiezas; }
 }
